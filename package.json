@@ -1,0 +1,31 @@
+{
+  "name": "frontend",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/react": "^4.1.6",
+    "@astrojs/vercel": "^8.0.4",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "astro": "^5.1.9",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.0.5",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sharp": "^0.33.5",
+    "tailwind-merge": "^2.6.0"
+  },
+  "devDependencies": {
+    "@unocss/preset-attributify": "^65.4.3",
+    "@unocss/preset-typography": "^65.4.3",
+    "@unocss/preset-uno": "^65.4.3",
+    "@unocss/reset": "^65.4.3",
+    "unocss": "^65.4.3"
+  }
+}
