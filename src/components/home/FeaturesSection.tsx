@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
 
 interface DecorativeProps {
@@ -8,7 +8,7 @@ interface DecorativeProps {
   imageIndex: number;
 }
 
-const FlowerImage: React.FC<DecorativeProps> = ({top, left, transform, imageIndex}) => {
+const FlowerImage: React.FC<DecorativeProps> = ({ top, left, transform, imageIndex }) => {
   const images = [
     '/imgs/flowers/flower1.webp',
     '/imgs/flowers/flower2.webp',
@@ -17,15 +17,15 @@ const FlowerImage: React.FC<DecorativeProps> = ({top, left, transform, imageInde
   ];
 
   return (
-    <motion.div 
+    <motion.div
       className="absolute w-12 h-12 rounded-full overflow-hidden pointer-events-none"
-      style={{top, left, transform}}
+      style={{ top, left, transform }}
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <img 
-        src={images[imageIndex]} 
+      <img
+        src={images[imageIndex]}
         alt="decorative flower"
         className="w-full h-full object-cover opacity-30"
       />
@@ -52,6 +52,26 @@ const features = [
 ] as const;
 
 export const FeaturesSection: React.FC = () => {
+  const [flowerPositions, setFlowerPositions] = useState<Array<Array<{
+    top: string;
+    left: string;
+    transform: string;
+    imageIndex: number;
+  }>>>([]);
+
+  useEffect(() => {
+    // Generate random positions only on the client
+    const positions = features.map(() =>
+      [...Array(4)].map(() => ({
+        top: `${-20 + Math.random() * 140}%`,
+        left: `${-20 + Math.random() * 140}%`,
+        transform: `rotate(${Math.random() * 360}deg) scale(${0.5 + Math.random() * 0.3})`,
+        imageIndex: Math.floor(Math.random() * 4),
+      }))
+    );
+    setFlowerPositions(positions);
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -73,7 +93,7 @@ export const FeaturesSection: React.FC = () => {
     <motion.section
       variants={containerVariants}
       initial="hidden"
-      animate="visible" 
+      animate="visible"
       className="relative mt-16 py-8 px-4"
     >
       {/* Features grid */}
@@ -91,15 +111,15 @@ export const FeaturesSection: React.FC = () => {
             <p className="text-gray-600 dm-sans-regular">
               {feature.description}
             </p>
-            
+
             {/* Flowers around each card */}
-            {[...Array(4)].map((_, i) => (
-              <FlowerImage 
+            {flowerPositions[index]?.map((pos, i) => (
+              <FlowerImage
                 key={`flower-${index}-${i}`}
-                top={`${-20 + Math.random() * 140}%`}
-                left={`${-20 + Math.random() * 140}%`}
-                transform={`rotate(${Math.random() * 360}deg) scale(${0.5 + Math.random() * 0.3})`}
-                imageIndex={i % 4}
+                top={pos.top}
+                left={pos.left}
+                transform={pos.transform}
+                imageIndex={pos.imageIndex}
               />
             ))}
           </motion.div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
 
 interface DecorativeProps {
@@ -23,7 +23,7 @@ const SocialIcon: React.FC<SocialLink> = ({ href, children }) => (
   </motion.a>
 );
 
-const FlowerImage: React.FC<DecorativeProps> = ({top, left, transform, imageIndex}) => {
+const FlowerImage: React.FC<DecorativeProps> = ({ top, left, transform, imageIndex }) => {
   const images = [
     '/imgs/flowers/flower1.webp',
     '/imgs/flowers/flower2.webp',
@@ -32,15 +32,15 @@ const FlowerImage: React.FC<DecorativeProps> = ({top, left, transform, imageInde
   ];
 
   return (
-    <motion.div 
+    <motion.div
       className="absolute w-12 h-12 rounded-full overflow-hidden pointer-events-none"
-      style={{top, left, transform}}
+      style={{ top, left, transform }}
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <img 
-        src={images[imageIndex]} 
+      <img
+        src={images[imageIndex]}
         alt="decorative flower"
         className="w-full h-full object-cover opacity-20"
       />
@@ -49,6 +49,24 @@ const FlowerImage: React.FC<DecorativeProps> = ({top, left, transform, imageInde
 };
 
 const Footer: React.FC = () => {
+  const [flowerPositions, setFlowerPositions] = useState<Array<{
+    top: string;
+    left: string;
+    transform: string;
+    imageIndex: number;
+  }> | null>(null);
+
+  useEffect(() => {
+    // Generate random positions only on the client
+    const positions = [...Array(12)].map((_, i) => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      transform: `rotate(${Math.random() * 360}deg) scale(${0.4 + Math.random() * 0.3})`,
+      imageIndex: i % 4,
+    }));
+    setFlowerPositions(positions);
+  }, []);
+
   const footerLinks = [
     {
       title: "Shop",
@@ -65,20 +83,20 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <motion.footer 
+    <motion.footer
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="relative bg-gradient-to-b from-pink-50 to-white pt-16 overflow-hidden"
     >
       {/* Decorative flowers */}
       <div className="absolute inset-0">
-        {[...Array(12)].map((_, i) => (
-          <FlowerImage 
+        {flowerPositions?.map((pos, i) => (
+          <FlowerImage
             key={`flower-${i}`}
-            top={`${Math.random() * 100}%`}
-            left={`${Math.random() * 100}%`}
-            transform={`rotate(${Math.random() * 360}deg) scale(${0.4 + Math.random() * 0.3})`}
-            imageIndex={i % 4}
+            top={pos.top}
+            left={pos.left}
+            transform={pos.transform}
+            imageIndex={pos.imageIndex}
           />
         ))}
       </div>
@@ -88,7 +106,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12">
           {/* Brand section */}
           <div className="text-center md:text-left">
-            <motion.h2 
+            <motion.h2
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               className="pacifico-regular text-3xl text-pink-500 mb-4"
@@ -121,7 +139,7 @@ const Footer: React.FC = () => {
           {/* Links sections */}
           {footerLinks.map((section, idx) => (
             <div key={section.title} className="text-center md:text-left">
-              <motion.h3 
+              <motion.h3
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1 * idx }}
@@ -131,14 +149,14 @@ const Footer: React.FC = () => {
               </motion.h3>
               <ul className="space-y-2">
                 {section.links.map((link, linkIdx) => (
-                  <motion.li 
+                  <motion.li
                     key={link}
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.1 * linkIdx }}
                   >
-                    <a 
-                      href="#" 
+                    <a
+                      href="#"
                       className="text-gray-600 hover:text-pink-500 transition-colors dm-sans-regular"
                     >
                       {link}

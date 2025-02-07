@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
 
 interface DecorativeProps {
@@ -8,7 +8,7 @@ interface DecorativeProps {
   imageIndex: number;
 }
 
-const FlowerImage: React.FC<DecorativeProps> = ({top, left, transform, imageIndex}) => {
+const FlowerImage: React.FC<DecorativeProps> = ({ top, left, transform, imageIndex }) => {
   const images = [
     '/imgs/flowers/flower1.webp', // Pink petals
     '/imgs/flowers/flower2.webp', // Mixed bouquet
@@ -17,20 +17,41 @@ const FlowerImage: React.FC<DecorativeProps> = ({top, left, transform, imageInde
   ];
 
   return (
-    <div 
+    <motion.div
       className="absolute w-16 h-16 rounded-full overflow-hidden"
-      style={{top, left, transform}}
+      style={{ top, left, transform }}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: 0.5 }}
     >
-      <img 
-        src={images[imageIndex]} 
+      <img
+        src={images[imageIndex]}
         alt="decorative flower"
         className="w-full h-full object-cover opacity-40 hover:opacity-60 transition-opacity duration-300"
       />
-    </div>
+    </motion.div>
   );
 };
 
 export const AboutSection: React.FC = () => {
+  const [flowerPositions, setFlowerPositions] = useState<Array<{
+    top: string;
+    left: string;
+    transform: string;
+    imageIndex: number;
+  }> | null>(null);
+
+  useEffect(() => {
+    // Generate random positions only on the client
+    const positions = [...Array(15)].map((_, i) => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      transform: `rotate(${Math.random() * 360}deg) scale(${0.6 + Math.random() * 0.4})`,
+      imageIndex: i % 4,
+    }));
+    setFlowerPositions(positions);
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -62,13 +83,13 @@ export const AboutSection: React.FC = () => {
     >
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-full">
-        {[...Array(15)].map((_, i) => (
-          <FlowerImage 
+        {flowerPositions?.map((pos, i) => (
+          <FlowerImage
             key={`flower-${i}`}
-            top={`${Math.random() * 100}%`}
-            left={`${Math.random() * 100}%`}
-            transform={`rotate(${Math.random() * 360}deg) scale(${0.6 + Math.random() * 0.4})`}
-            imageIndex={i % 4}
+            top={pos.top}
+            left={pos.left}
+            transform={pos.transform}
+            imageIndex={pos.imageIndex}
           />
         ))}
       </div>

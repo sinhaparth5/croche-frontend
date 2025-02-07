@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
 
 interface DecorativeProps {
@@ -8,7 +8,7 @@ interface DecorativeProps {
   imageIndex: number;
 }
 
-const FlowerImage: React.FC<DecorativeProps> = ({top, left, transform, imageIndex}) => {
+const FlowerImage: React.FC<DecorativeProps> = ({ top, left, transform, imageIndex }) => {
   const images = [
     '/imgs/flowers/flower1.webp',
     '/imgs/flowers/flower2.webp',
@@ -17,24 +17,45 @@ const FlowerImage: React.FC<DecorativeProps> = ({top, left, transform, imageInde
   ];
 
   return (
-    <div 
+    <motion.div
       className="absolute w-16 h-16 rounded-full overflow-hidden"
-      style={{top, left, transform}}
+      style={{ top, left, transform }}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <img 
-        src={images[imageIndex]} 
+      <img
+        src={images[imageIndex]}
         alt="decorative flower"
         className="w-full h-full object-cover opacity-40 hover:opacity-60 transition-opacity duration-300"
       />
-    </div>
+    </motion.div>
   );
 };
 
 export const ContactSection: React.FC = () => {
+  const [flowerPositions, setFlowerPositions] = useState<Array<{
+    top: string;
+    left: string;
+    transform: string;
+    imageIndex: number;
+  }> | null>(null);
+
+  useEffect(() => {
+    // Generate random positions only on the client
+    const positions = [...Array(15)].map((_, i) => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      transform: `rotate(${Math.random() * 360}deg) scale(${0.6 + Math.random() * 0.4})`,
+      imageIndex: i % 4,
+    }));
+    setFlowerPositions(positions);
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: {
         duration: 0.8,
@@ -45,10 +66,10 @@ export const ContactSection: React.FC = () => {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 10 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
-      transition: { 
+      transition: {
         duration: 0.5,
         ease: "easeOut"
       }
@@ -65,13 +86,13 @@ export const ContactSection: React.FC = () => {
     >
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-full">
-        {[...Array(15)].map((_, i) => (
-          <FlowerImage 
+        {flowerPositions?.map((pos, i) => (
+          <FlowerImage
             key={`flower-${i}`}
-            top={`${Math.random() * 100}%`}
-            left={`${Math.random() * 100}%`}
-            transform={`rotate(${Math.random() * 360}deg) scale(${0.6 + Math.random() * 0.4})`}
-            imageIndex={i % 4}
+            top={pos.top}
+            left={pos.left}
+            transform={pos.transform}
+            imageIndex={pos.imageIndex}
           />
         ))}
       </div>
@@ -85,23 +106,23 @@ export const ContactSection: React.FC = () => {
           <h2 className="text-5xl text-pink-500 pacifico-regular">
             Contact Us
           </h2>
-          <div className="h-1 w-24 bg-gradient-to-r from-pink-300 to-pink-500 rounded-full"/>
+          <div className="h-1 w-24 bg-gradient-to-r from-pink-300 to-pink-500 rounded-full" />
         </motion.div>
 
-        <motion.div 
+        <motion.div
           variants={itemVariants}
           className="max-w-lg mx-auto bg-white/90 backdrop-blur-sm p-10 rounded-xl shadow-xl"
         >
-          <motion.p 
+          <motion.p
             variants={itemVariants}
             className="text-xl text-gray-600 mb-8 dm-sans-regular text-center"
           >
-            Have questions or need help? 
+            Have questions or need help?
             <br />
             <span className="text-pink-500">We'd love to hear from you!</span>
           </motion.p>
 
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="space-y-6 dm-sans-regular"
           >

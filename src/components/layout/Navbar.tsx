@@ -9,7 +9,7 @@ interface DecorativeProps {
   imageIndex: number;
 }
 
-const FlowerImage: React.FC<DecorativeProps> = ({top, left, transform, imageIndex}) => {
+const FlowerImage: React.FC<DecorativeProps> = ({ top, left, transform, imageIndex }) => {
   const images = [
     '/imgs/flowers/flower1.webp',
     '/imgs/flowers/flower2.webp',
@@ -18,15 +18,15 @@ const FlowerImage: React.FC<DecorativeProps> = ({top, left, transform, imageInde
   ];
 
   return (
-    <motion.div 
+    <motion.div
       className="absolute w-8 h-8 rounded-full overflow-hidden pointer-events-none"
-      style={{top, left, transform}}
+      style={{ top, left, transform }}
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <img 
-        src={images[imageIndex]} 
+      <img
+        src={images[imageIndex]}
         alt="decorative flower"
         className="w-full h-full object-cover opacity-20"
       />
@@ -44,8 +44,26 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [flowerPositions, setFlowerPositions] = useState<Array<{
+    top: string;
+    left: string;
+    transform: string;
+    imageIndex: number;
+  }> | null>(null);
+
   const itemCount = 0;
   const cartTotal = 0;
+
+  useEffect(() => {
+    // Generate random positions only on the client
+    const positions = [...Array(6)].map((_, i) => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      transform: `rotate(${Math.random() * 360}deg) scale(${0.4 + Math.random() * 0.3})`,
+      imageIndex: i % 4,
+    }));
+    setFlowerPositions(positions);
+  }, []);
 
   useEffect(() => {
     const checkAuthStatus = () => {
@@ -85,20 +103,20 @@ const Navbar = () => {
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className="bg-white/95 backdrop-blur-sm shadow-md fixed w-full top-0 z-50"
     >
       <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Decorative Flowers */}
-        {[...Array(6)].map((_, i) => (
-          <FlowerImage 
+        {flowerPositions?.map((pos, i) => (
+          <FlowerImage
             key={`flower-${i}`}
-            top={`${Math.random() * 100}%`}
-            left={`${Math.random() * 100}%`}
-            transform={`rotate(${Math.random() * 360}deg) scale(${0.4 + Math.random() * 0.3})`}
-            imageIndex={i % 4}
+            top={pos.top}
+            left={pos.left}
+            transform={pos.transform}
+            imageIndex={pos.imageIndex}
           />
         ))}
 
@@ -201,7 +219,7 @@ const Navbar = () => {
             {/* Cart Section */}
             <div className="flex items-center">
               {cartTotal > 0 && (
-                <motion.span 
+                <motion.span
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   className="hidden sm:block text-gray-600 mr-2"
@@ -209,9 +227,9 @@ const Navbar = () => {
                   ₹{cartTotal.toFixed(2)}
                 </motion.span>
               )}
-              <motion.a 
+              <motion.a
                 whileHover={{ scale: 1.1 }}
-                href="/cart" 
+                href="/cart"
                 className="relative p-2"
               >
                 <Icon
@@ -253,7 +271,7 @@ const Navbar = () => {
                     {item}
                   </motion.a>
                 ))}
-                
+
                 <div className="border-t pt-4 mt-2">
                   {isLoggedIn && userData ? (
                     <>
