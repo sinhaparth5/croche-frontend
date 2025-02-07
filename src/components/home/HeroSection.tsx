@@ -28,7 +28,7 @@ export const HeroSection = () => {
                   </a>
               </div>
               <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
-                  <img src="/heroImage.jpg" alt="mockup" className="w-full h-full object-cover" />
+                  <img src="/heroImage-removebg.png" alt="mockup" className="w-full h-full object-cover" />
               </div>                
           </div>
       </section>
