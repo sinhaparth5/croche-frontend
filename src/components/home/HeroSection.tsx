@@ -10,7 +10,7 @@ export const HeroSection = () => {
       <div 
         className="absolute inset-0 w-full h-full"
         style={{
-          backgroundImage: 'url("/backgroundRibbion.jpg")',
+          backgroundImage: 'url("/imgs/backgroundRibbion.webp")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -28,7 +28,7 @@ export const HeroSection = () => {
                   </a>
               </div>
               <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
-                  <img src="/heroImage-removebg.png" alt="mockup" className="w-full h-full object-cover" />
+                  <img src="/imgs/heroImage.webp" alt="mockup" className="w-full h-full object-cover" />
               </div>                
           </div>
       </section>
