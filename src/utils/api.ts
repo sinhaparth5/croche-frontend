@@ -1,73 +1,77 @@
-// src/api.ts
-import type { 
-  LoginCredentials, 
-  RegisterData, 
-  AuthResponse, 
-  User, 
-  Product 
-} from '../types';
+import type { LoginInput, RegisterInput, AuthResponse } from "../types/auth";
 
-const API_BASE_URL = 'https://croche-backend-production.up.railway.app/api';
+const GRAPHQL_URL = 'http://localhost:3000/graphql';
 
-class ApiError extends Error {
-  constructor(
-    message: string,
-    public status?: number,
-    public data?: any
-  ) {
-    super(message);
-    this.name = 'ApiError';
+const LOGIN_MUTATION = `
+  mutation Login($input: LoginInput!) {
+    login(input: $input) {
+      access_token
+      user {
+        id
+        name
+        email
+        isAdmin
+        createdAt
+        updatedAt
+      }
+    }
   }
-}
+`;
 
-async function handleResponse<T>(response: Response): Promise<T> {
+const REGISTER_MUTATION = `
+  mutation Register($input: RegisterUserInput!) {
+    register(input: $input) {
+      access_token
+      user {
+        id
+        name
+        email
+        isAdmin
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+async function graphqlRequest<T>(query: string, variables: Record<string, any>): Promise<T> {
+  const response = await fetch(GRAPHQL_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'apollo-require-preflight': 'true'
+    },
+    body: JSON.stringify({
+      query,
+      variables,
+    }),
+    credentials: 'include',
+  });
+
   const data = await response.json();
-  
-  if (!response.ok) {
-    throw new ApiError(
-      data.message || 'API request failed',
-      response.status,
-      data
-    );
+
+  if (data.errors) {
+    throw new Error(data.errors[0]?.message || 'GraphQL request failed');
   }
-  
-  return data;
+
+  return data.data;
 }
 
-export const api = {
-  async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response = await fetch(`${API_BASE_URL}/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials)
-    });
-    return handleResponse<AuthResponse>(response);
+export const authApi = {
+  async login(credentials: LoginInput): Promise<AuthResponse> {
+    const data = await graphqlRequest<{ login: AuthResponse }>(
+      LOGIN_MUTATION,
+      { input: credentials }
+    );
+    return data.login;
   },
 
-  async register(userData: RegisterData): Promise<AuthResponse> {
-    const response = await fetch(`${API_BASE_URL}/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData)
-    });
-    return handleResponse<AuthResponse>(response);
-  },
-
-  async getProducts(): Promise<{ products: Product[] }> {
-    const response = await fetch(`${API_BASE_URL}/products`);
-    return handleResponse<{ products: Product[] }>(response);
-  },
-
-  // New product by ID endpoint
-  async getProduct(id: string): Promise<{ product: Product }> {
-    const response = await fetch(`${API_BASE_URL}/products/${id}`);
-    return handleResponse<{ product: Product }>(response);
-  },
-
-  async getUserDetails(userId: string, token: string): Promise<User> {
-    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    return handleResponse<User>(response);
+  async register(userData: RegisterInput): Promise<AuthResponse> {
+    const data = await graphqlRequest<{ register: AuthResponse }>(
+      REGISTER_MUTATION,
+      { input: userData }
+    );
+    return data.register;
   }
-};
+}

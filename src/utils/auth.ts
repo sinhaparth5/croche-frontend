@@ -1,9 +1,4 @@
-import type { User } from '../types';
-
-interface JwtPayload {
-  exp: number;
-  [key: string]: any;
-}
+import type { User } from "../types/auth";
 
 export const auth = {
   getToken(): string | null {
@@ -32,10 +27,10 @@ export const auth = {
     if (!token) return false;
 
     try {
-      const payload = JSON.parse(atob(token.split('.')[1])) as JwtPayload;
+      const payload = JSON.parse(atob(token.split('.')[1]));
       return payload.exp * 1000 > Date.now();
     } catch {
       return false;
     }
   }
-};
+}

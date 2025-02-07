@@ -154,7 +154,7 @@ const Navbar = () => {
             <motion.a
               href="/"
               whileHover={{ scale: 1.05 }}
-              className="dm-sans-semi-bold font-bold text-pink-400 ml-2 sm:ml-0 flex-1 text-center sm:text-left"
+              className="dm-sans-semi-bold font-bold text-pink-500 ml-2 sm:ml-0 flex-1 text-center sm:text-left"
             >
               <span className="pacifico-bold text-2xl sm:text-3xl pr-2">Crochet</span>
               <span className="hidden sm:inline-block">by Ameesha</span>
@@ -191,7 +191,7 @@ const Navbar = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleLogout}
-                  className="hidden sm:block bg-pink-400 text-white px-4 py-2 rounded-full hover:bg-pink-500 transition-colors"
+                  className="hidden sm:block pacifico-regular bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600 transition-colors"
                 >
                   Logout
                 </motion.button>
@@ -285,7 +285,7 @@ const Navbar = () => {
                       <motion.button
                         whileHover={{ scale: 1.05, x: 10 }}
                         onClick={handleLogout}
-                        className="w-full text-left py-2 text-gray-600 hover:text-pink-400 transition-colors"
+                        className="w-full text-left py-2 text-gray-600 text-pink-500 hover:text-pink-600 transition-colors"
                       >
                         Logout
                       </motion.button>

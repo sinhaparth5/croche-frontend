@@ -109,15 +109,15 @@ const Footer: React.FC = () => {
             <motion.h2
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className="pacifico-regular text-3xl text-pink-500 mb-4"
+              className="dm-sans-semi-bold text-pink-500 mb-4"
             >
-              Crochet by Ameesha
+              <span className='pacifico-regular pr-4 text-3xl'>Crochet</span> by Ameesha
             </motion.h2>
             <p className="dm-sans-regular text-gray-600 mb-6">
               Handcrafted with love, designed to bring joy to your life.
             </p>
             {/* Newsletter signup */}
-            <div className="mt-4">
+            <div className="mt-16">
               <h3 className="text-sm font-semibold text-gray-700 mb-2">Join our newsletter</h3>
               <div className="flex gap-2">
                 <input
@@ -128,7 +128,7 @@ const Footer: React.FC = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-pink-primary text-white px-6 py-2 rounded-full hover:bg-pink-secondary transition-colors"
+                  className="bg-pink-primary pacifico-regular text-white px-6 py-2 rounded-full hover:bg-pink-secondary transition-colors"
                 >
                   Subscribe
                 </motion.button>
@@ -172,15 +172,10 @@ const Footer: React.FC = () => {
         <div className="border-t border-pink-100 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-600 dm-sans-regular text-center md:text-left mb-4 md:mb-0">
-              © 2024 Crochet by Ameesha. All rights reserved.
+              © {new Date().getFullYear()} <span className='pacifico-regular'>Crochet</span> by Ameesha. All rights reserved.
             </p>
             {/* Social links */}
             <div className="flex space-x-6">
-              <SocialIcon href="#">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                </svg>
-              </SocialIcon>
               <SocialIcon href="#">
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10z"/>
