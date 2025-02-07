@@ -63,8 +63,8 @@ export const FeaturesSection: React.FC = () => {
     // Generate random positions only on the client
     const positions = features.map(() =>
       [...Array(4)].map(() => ({
-        top: `${-20 + Math.random() * 140}%`,
-        left: `${-20 + Math.random() * 140}%`,
+        top: `${Math.random() * 80}%`, // Constrain top to 80% to avoid overflow
+        left: `${Math.random() * 80}%`, // Constrain left to 80% to avoid overflow
         transform: `rotate(${Math.random() * 360}deg) scale(${0.5 + Math.random() * 0.3})`,
         imageIndex: Math.floor(Math.random() * 4),
       }))
@@ -94,7 +94,7 @@ export const FeaturesSection: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="relative mt-16 py-8 px-4"
+      className="container mx-auto relative mt-16 py-8 px-4 overflow-hidden" // Add overflow-hidden to prevent 2D scroll
     >
       {/* Features grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -102,7 +102,7 @@ export const FeaturesSection: React.FC = () => {
           <motion.div
             key={index}
             variants={itemVariants}
-            className="relative bg-white/90 backdrop-blur-sm p-8 rounded-xl shadow-xl text-center transform hover:scale-105 transition-transform duration-300"
+            className="relative bg-white/90 backdrop-blur-sm p-8 rounded-xl shadow-xl text-center transform hover:scale-105 transition-transform duration-300 overflow-hidden" // Add overflow-hidden to prevent 2D scroll
           >
             <span className="text-3xl mb-4 block">{feature.icon}</span>
             <h3 className="text-2xl pacifico-regular text-pink-500 mb-3">

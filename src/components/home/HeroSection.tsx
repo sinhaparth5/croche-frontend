@@ -17,7 +17,7 @@ export const HeroSection = () => {
           zIndex: 0
         }}
       />
-      <section className="bg-white/80 dark:bg-gray-900/80 relative z-10">
+      <section className="container mx-auto px-4 pt-20 bg-white/80 dark:bg-gray-900/80 relative z-10">
           <div className="grid max-w-screen-xl mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12">
               <div className="mr-auto place-self-center lg:col-span-7">
                   <h1 className="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">Handmade Crochet, Made with Love</h1>

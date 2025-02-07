@@ -82,7 +82,7 @@ export const ContactSection: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="relative mt-16 py-16 px-8 bg-gradient-to-br from-pink-50 to-gray-100 rounded-2xl shadow-lg overflow-hidden"
+      className="container mx-auto px-4 relative mt-16 py-16 px-8 bg-gradient-to-br from-pink-50 to-gray-100 rounded-2xl shadow-lg overflow-hidden mb-8"
     >
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-full">
