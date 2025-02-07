@@ -5,39 +5,30 @@ interface DecorativeProps {
   top: string;
   left: string;
   transform: string;
+  imageIndex: number;
 }
 
-const FlowerSVG: React.FC<DecorativeProps> = ({top, left, transform}) => (
-  <svg width="40" height="40" viewBox="0 0 40 40" className="absolute" style={{top, left, transform}}>
-    <g className="opacity-40">
-      {[0, 60, 120, 180, 240, 300].map((angle) => (
-        <path
-          key={angle}
-          d="M20 15 Q 20 5, 25 0 Q 20 5, 20 15"
-          fill="#FB4EB4"
-          transform={`rotate(${angle} 20 20)`}
-        />
-      ))}
-      <circle cx="20" cy="20" r="4" fill="#FF9CF2"/>
-    </g>
-  </svg>
-);
+const FlowerImage: React.FC<DecorativeProps> = ({top, left, transform, imageIndex}) => {
+  const images = [
+    '/imgs/flowers/flower1.webp',
+    '/imgs/flowers/flower2.webp',
+    '/imgs/flowers/flower4.webp',
+    '/imgs/flowers/flower5.webp'
+  ];
 
-const SmallFlowerSVG: React.FC<DecorativeProps> = ({top, left, transform}) => (
-  <svg width="20" height="20" viewBox="0 0 20 20" className="absolute" style={{top, left, transform}}>
-    <g className="opacity-30">
-      <circle cx="10" cy="10" r="3" fill="#FB4EB4"/>
-      {[0, 72, 144, 216, 288].map((angle) => (
-        <path
-          key={angle}
-          d="M10 7 Q 10 4, 13 3 Q 10 4, 10 7"
-          fill="#FF9CF2"
-          transform={`rotate(${angle} 10 10)`}
-        />
-      ))}
-    </g>
-  </svg>
-);
+  return (
+    <div 
+      className="absolute w-16 h-16 rounded-full overflow-hidden"
+      style={{top, left, transform}}
+    >
+      <img 
+        src={images[imageIndex]} 
+        alt="decorative flower"
+        className="w-full h-full object-cover opacity-40 hover:opacity-60 transition-opacity duration-300"
+      />
+    </div>
+  );
+};
 
 export const ContactSection: React.FC = () => {
   const containerVariants = {
@@ -74,20 +65,13 @@ export const ContactSection: React.FC = () => {
     >
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-full">
-        {[...Array(6)].map((_, i) => (
-          <FlowerSVG 
-            key={`flower-lg-${i}`}
-            top={`${Math.random() * 100}%`}
-            left={`${Math.random() * 100}%`}
-            transform={`rotate(${Math.random() * 360}deg) scale(${0.8 + Math.random() * 0.4})`}
-          />
-        ))}
-        {[...Array(12)].map((_, i) => (
-          <SmallFlowerSVG 
-            key={`flower-sm-${i}`}
+        {[...Array(15)].map((_, i) => (
+          <FlowerImage 
+            key={`flower-${i}`}
             top={`${Math.random() * 100}%`}
             left={`${Math.random() * 100}%`}
             transform={`rotate(${Math.random() * 360}deg) scale(${0.6 + Math.random() * 0.4})`}
+            imageIndex={i % 4}
           />
         ))}
       </div>
@@ -106,7 +90,7 @@ export const ContactSection: React.FC = () => {
 
         <motion.div 
           variants={itemVariants}
-          className="max-w-lg mx-auto bg-white/80 backdrop-blur-sm p-10 rounded-xl shadow-xl"
+          className="max-w-lg mx-auto bg-white/90 backdrop-blur-sm p-10 rounded-xl shadow-xl"
         >
           <motion.p 
             variants={itemVariants}

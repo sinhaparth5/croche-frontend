@@ -5,23 +5,30 @@ interface DecorativeProps {
   top: string;
   left: string;
   transform: string;
+  imageIndex: number;
 }
 
-const FlowerSVG: React.FC<DecorativeProps> = ({top, left, transform}) => (
-  <svg width="40" height="40" viewBox="0 0 40 40" className="absolute" style={{top, left, transform}}>
-    <g className="opacity-40">
-      {[0, 72, 144, 216, 288].map((angle) => (
-        <path
-          key={angle}
-          d="M20 15 Q 20 5, 25 0 Q 20 5, 20 15"
-          fill="#FB4EB4"
-          transform={`rotate(${angle} 20 20)`}
-        />
-      ))}
-      <circle cx="20" cy="20" r="4" fill="#FF9CF2"/>
-    </g>
-  </svg>
-);
+const FlowerImage: React.FC<DecorativeProps> = ({top, left, transform, imageIndex}) => {
+  const images = [
+    '/imgs/flowers/flower1.webp', // Pink petals
+    '/imgs/flowers/flower2.webp', // Mixed bouquet
+    '/imgs/flowers/flower4.webp', // Pink daisy
+    '/imgs/flowers/flower5.webp'  // Illustrated flower
+  ];
+
+  return (
+    <div 
+      className="absolute w-16 h-16 rounded-full overflow-hidden"
+      style={{top, left, transform}}
+    >
+      <img 
+        src={images[imageIndex]} 
+        alt="decorative flower"
+        className="w-full h-full object-cover opacity-40 hover:opacity-60 transition-opacity duration-300"
+      />
+    </div>
+  );
+};
 
 export const AboutSection: React.FC = () => {
   const containerVariants = {
@@ -55,12 +62,13 @@ export const AboutSection: React.FC = () => {
     >
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-full">
-        {[...Array(12)].map((_, i) => (
-          <FlowerSVG 
+        {[...Array(15)].map((_, i) => (
+          <FlowerImage 
             key={`flower-${i}`}
             top={`${Math.random() * 100}%`}
             left={`${Math.random() * 100}%`}
             transform={`rotate(${Math.random() * 360}deg) scale(${0.6 + Math.random() * 0.4})`}
+            imageIndex={i % 4}
           />
         ))}
       </div>
@@ -79,7 +87,7 @@ export const AboutSection: React.FC = () => {
 
         <motion.div 
           variants={itemVariants}
-          className="max-w-2xl mx-auto bg-white/80 backdrop-blur-sm p-10 rounded-xl shadow-xl"
+          className="max-w-2xl mx-auto bg-white/90 backdrop-blur-sm p-10 rounded-xl shadow-xl"
         >
           <motion.p 
             variants={itemVariants}

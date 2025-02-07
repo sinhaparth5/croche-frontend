@@ -1,5 +1,38 @@
 import React, { useState, useEffect } from "react";
 import { Icon } from "../ui/Icons";
+import { motion, AnimatePresence } from "framer-motion";
+
+interface DecorativeProps {
+  top: string;
+  left: string;
+  transform: string;
+  imageIndex: number;
+}
+
+const FlowerImage: React.FC<DecorativeProps> = ({top, left, transform, imageIndex}) => {
+  const images = [
+    '/imgs/flowers/flower1.webp',
+    '/imgs/flowers/flower2.webp',
+    '/imgs/flowers/flower4.webp',
+    '/imgs/flowers/flower5.webp'
+  ];
+
+  return (
+    <motion.div 
+      className="absolute w-8 h-8 rounded-full overflow-hidden pointer-events-none"
+      style={{top, left, transform}}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <img 
+        src={images[imageIndex]} 
+        alt="decorative flower"
+        className="w-full h-full object-cover opacity-20"
+      />
+    </motion.div>
+  );
+};
 
 type UserData = {
   name: string;
@@ -11,8 +44,6 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  // Cart state (to be implemented with actual cart functionality)
   const itemCount = 0;
   const cartTotal = 0;
 
@@ -54,174 +85,219 @@ const Navbar = () => {
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
   return (
-    <nav className="bg-white shadow-md fixed w-full top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <motion.nav 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className="bg-white/95 backdrop-blur-sm shadow-md fixed w-full top-0 z-50"
+    >
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Decorative Flowers */}
+        {[...Array(6)].map((_, i) => (
+          <FlowerImage 
+            key={`flower-${i}`}
+            top={`${Math.random() * 100}%`}
+            left={`${Math.random() * 100}%`}
+            transform={`rotate(${Math.random() * 360}deg) scale(${0.4 + Math.random() * 0.3})`}
+            imageIndex={i % 4}
+          />
+        ))}
+
         <div className="flex justify-between items-center h-16">
           {/* Mobile Menu Button and Brand Logo */}
           <div className="flex items-center flex-1 sm:flex-none">
-            <button
+            <motion.button
+              whileTap={{ scale: 0.95 }}
               onClick={toggleMenu}
               className="sm:hidden p-2 focus:outline-none"
               aria-label="Toggle navigation menu"
             >
-              {isMenuOpen ? (
-                <Icon name="x" className="h-6 w-6 text-gray-600" />
-              ) : (
-                <Icon name="menu" className="h-6 w-6 text-gray-600" />
-              )}
-            </button>
-            <a
+              <AnimatePresence mode="wait">
+                {isMenuOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                  >
+                    <Icon name="x" className="h-6 w-6 text-gray-600" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                  >
+                    <Icon name="menu" className="h-6 w-6 text-gray-600" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.button>
+            <motion.a
               href="/"
+              whileHover={{ scale: 1.05 }}
               className="dm-sans-semi-bold font-bold text-pink-400 ml-2 sm:ml-0 flex-1 text-center sm:text-left"
             >
               <span className="pacifico-bold text-2xl sm:text-3xl pr-2">Crochet</span>
               <span className="hidden sm:inline-block">by Ameesha</span>
-            </a>
+            </motion.a>
           </div>
 
           {/* Desktop Navigation Links */}
           <div className="hidden sm:flex items-center space-x-8">
-            <a
-              href="/shop"
-              className="text-gray-600 hover:text-pink-400 transition-colors"
-            >
-              Shop
-            </a>
-            <a
-              href="/#about"
-              className="text-gray-600 hover:text-pink-400 transition-colors"
-            >
-              About
-            </a>
-            <a
-              href="/#contact"
-              className="text-gray-600 hover:text-pink-400 transition-colors"
-            >
-              Contact
-            </a>
+            {["Shop", "About", "Contact"].map((item) => (
+              <motion.a
+                key={item}
+                href={item === "Shop" ? "/shop" : `/#${item.toLowerCase()}`}
+                whileHover={{ scale: 1.1 }}
+                className="text-gray-600 hover:text-pink-400 transition-colors"
+              >
+                {item}
+              </motion.a>
+            ))}
           </div>
 
           {/* User, Cart, and Auth Buttons */}
           <div className="flex items-center space-x-4">
             {isLoggedIn && userData ? (
               <>
-                <a
+                <motion.a
+                  whileHover={{ scale: 1.05 }}
                   href={`/profile/${userData.id}`}
                   className="hidden sm:flex items-center text-gray-600 hover:text-pink-400 transition-colors"
                 >
                   <Icon name="user" className="h-5 w-5 mr-1" />
                   <span>{userData.name}</span>
-                </a>
-                <button
+                </motion.a>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={handleLogout}
                   className="hidden sm:block bg-pink-400 text-white px-4 py-2 rounded-full hover:bg-pink-500 transition-colors"
                 >
                   Logout
-                </button>
+                </motion.button>
               </>
             ) : (
               <div className="hidden sm:flex items-center space-x-4">
-                <a
+                <motion.a
+                  whileHover={{ scale: 1.05 }}
                   href="/login"
                   className="text-gray-600 hover:text-pink-400 transition-colors"
                 >
                   Login
-                </a>
-                <a
+                </motion.a>
+                <motion.a
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   href="/register"
                   className="bg-pink-primary pacifico-regular text-white px-4 py-2 rounded-full hover:bg-pink-secondary transition-colors"
                 >
                   Register
-                </a>
+                </motion.a>
               </div>
             )}
 
             {/* Cart Section */}
             <div className="flex items-center">
               {cartTotal > 0 && (
-                <span className="hidden sm:block text-gray-600 mr-2">
+                <motion.span 
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="hidden sm:block text-gray-600 mr-2"
+                >
                   ₹{cartTotal.toFixed(2)}
-                </span>
+                </motion.span>
               )}
-              <a href="/cart" className="relative p-2">
+              <motion.a 
+                whileHover={{ scale: 1.1 }}
+                href="/cart" 
+                className="relative p-2"
+              >
                 <Icon
                   name="shoppingCart"
                   className="h-6 w-6 text-gray-600 hover:text-pink-400 transition-colors"
                 />
                 {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-pink-400 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute -top-1 -right-1 bg-pink-400 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                  >
                     {itemCount}
-                  </span>
+                  </motion.span>
                 )}
-              </a>
+              </motion.a>
             </div>
           </div>
         </div>
 
         {/* Mobile Menu Overlay */}
-        {isMenuOpen && (
-          <div className="sm:hidden absolute top-16 left-0 right-0 bg-white shadow-lg z-50">
-            <div className="px-4 pt-2 pb-4 space-y-2">
-              <a
-                href="/shop"
-                onClick={toggleMenu}
-                className="block py-2 text-gray-600 hover:text-pink-400 transition-colors"
-              >
-                Shop
-              </a>
-              <a
-                href="/#about"
-                onClick={toggleMenu}
-                className="block py-2 text-gray-600 hover:text-pink-400 transition-colors"
-              >
-                About
-              </a>
-              <a
-                href="/#contact"
-                onClick={toggleMenu}
-                className="block py-2 text-gray-600 hover:text-pink-400 transition-colors"
-              >
-                Contact
-              </a>
-              
-              <div className="border-t pt-4 mt-2">
-                {isLoggedIn && userData ? (
-                  <>
-                    <a
-                      href={`/profile/${userData.id}`}
-                      className="block py-2 text-gray-600 hover:text-pink-400 transition-colors"
-                    >
-                      Profile
-                    </a>
-                    <button
-                      onClick={handleLogout}
-                      className="w-full text-left py-2 text-gray-600 hover:text-pink-400 transition-colors"
-                    >
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <a
-                      href="/login"
-                      className="block py-2 text-gray-600 hover:text-pink-400 transition-colors"
-                    >
-                      Login
-                    </a>
-                    <a
-                      href="/register"
-                      className="block w-full bg-pink-primary pacifico-regular text-white px-4 py-3 rounded-full hover:bg-pink-secondary transition-colors mt-2"
-                    >
-                      Register
-                    </a>
-                  </>
-                )}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="sm:hidden absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-lg z-50 overflow-hidden"
+            >
+              <div className="px-4 pt-2 pb-4 space-y-2">
+                {["Shop", "About", "Contact"].map((item) => (
+                  <motion.a
+                    key={item}
+                    whileHover={{ scale: 1.05, x: 10 }}
+                    href={item === "Shop" ? "/shop" : `/#${item.toLowerCase()}`}
+                    onClick={toggleMenu}
+                    className="block py-2 text-gray-600 hover:text-pink-400 transition-colors"
+                  >
+                    {item}
+                  </motion.a>
+                ))}
+                
+                <div className="border-t pt-4 mt-2">
+                  {isLoggedIn && userData ? (
+                    <>
+                      <motion.a
+                        whileHover={{ scale: 1.05, x: 10 }}
+                        href={`/profile/${userData.id}`}
+                        className="block py-2 text-gray-600 hover:text-pink-400 transition-colors"
+                      >
+                        Profile
+                      </motion.a>
+                      <motion.button
+                        whileHover={{ scale: 1.05, x: 10 }}
+                        onClick={handleLogout}
+                        className="w-full text-left py-2 text-gray-600 hover:text-pink-400 transition-colors"
+                      >
+                        Logout
+                      </motion.button>
+                    </>
+                  ) : (
+                    <>
+                      <motion.a
+                        whileHover={{ scale: 1.05, x: 10 }}
+                        href="/login"
+                        className="block py-2 text-gray-600 hover:text-pink-400 transition-colors"
+                      >
+                        Login
+                      </motion.a>
+                      <motion.a
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        href="/register"
+                        className="block w-full bg-pink-primary pacifico-regular text-white px-4 py-3 rounded-full hover:bg-pink-secondary transition-colors mt-2 text-center"
+                      >
+                        Register
+                      </motion.a>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 
