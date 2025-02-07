@@ -1,18 +1,15 @@
-// src/components/layout/Navbar.tsx
 import React, { useState, useEffect } from "react";
 import { Icon } from "../ui/Icons";
 
-
 type UserData = {
   name: string;
-  id : string;
+  id: string;
   email: string;
 };
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [isMounted, setIsMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Cart state (to be implemented with actual cart functionality)
@@ -22,9 +19,8 @@ const Navbar = () => {
   useEffect(() => {
     const checkAuthStatus = () => {
       try {
-        const token = localStorage.getItem('authToken');
-        const userStr = localStorage.getItem('user');
-
+        const token = localStorage.getItem("authToken");
+        const userStr = localStorage.getItem("user");
         if (token && userStr) {
           const user = JSON.parse(userStr);
           setIsLoggedIn(true);
@@ -34,42 +30,38 @@ const Navbar = () => {
           setUserData(null);
         }
       } catch (error) {
-        console.error('Error checking auth status:', error);
+        console.error("Error checking auth status:", error);
         setIsLoggedIn(false);
         setUserData(null);
       }
     };
 
-    setIsMounted(true);
     checkAuthStatus();
-
-    window.addEventListener('auth-change', checkAuthStatus);
+    window.addEventListener("auth-change", checkAuthStatus);
     return () => {
-      window.removeEventListener('auth-change', checkAuthStatus);
+      window.removeEventListener("auth-change", checkAuthStatus);
     };
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
     setIsLoggedIn(false);
     setUserData(null);
-    window.location.href = '/';
+    window.location.href = "/";
   };
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
-  if (!isMounted) return null;
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
   return (
     <nav className="bg-white shadow-md fixed w-full top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Mobile Menu Button and Brand Logo */}
-          <div className="flex items-center">
-            <button 
+          <div className="flex items-center flex-1 sm:flex-none">
+            <button
               onClick={toggleMenu}
-              className="sm:hidden p-2"
+              className="sm:hidden p-2 focus:outline-none"
               aria-label="Toggle navigation menu"
             >
               {isMenuOpen ? (
@@ -80,53 +72,34 @@ const Navbar = () => {
             </button>
             <a
               href="/"
-              className="text-2xl font-bold text-pink-400 ml-2 sm:ml-0"
+              className="dm-sans-semi-bold font-bold text-pink-400 ml-2 sm:ml-0 flex-1 text-center sm:text-left"
             >
-              Croche By Ameesha
+              <span className="pacifico-bold text-2xl sm:text-3xl pr-2">Crochet</span>
+              <span className="hidden sm:inline-block">by Ameesha</span>
             </a>
           </div>
 
           {/* Desktop Navigation Links */}
           <div className="hidden sm:flex items-center space-x-8">
-            <a href="/shop" className="text-gray-600 hover:text-pink-400 transition-colors">
+            <a
+              href="/shop"
+              className="text-gray-600 hover:text-pink-400 transition-colors"
+            >
               Shop
             </a>
-            <a href="/#about" className="text-gray-600 hover:text-pink-400 transition-colors">
+            <a
+              href="/#about"
+              className="text-gray-600 hover:text-pink-400 transition-colors"
+            >
               About
             </a>
-            <a href="/#contact" className="text-gray-600 hover:text-pink-400 transition-colors">
+            <a
+              href="/#contact"
+              className="text-gray-600 hover:text-pink-400 transition-colors"
+            >
               Contact
             </a>
           </div>
-
-          {/* Mobile Menu Overlay */}
-          {isMenuOpen && (
-            <div className="sm:hidden absolute top-16 left-0 right-0 bg-white shadow-lg z-50">
-              <div className="px-4 pt-2 pb-4 space-y-4">
-                <a
-                  href="/shop"
-                  onClick={toggleMenu}
-                  className="block text-gray-600 hover:text-pink-400 transition-colors"
-                >
-                  Shop
-                </a>
-                <a
-                  href="/#about"
-                  onClick={toggleMenu}
-                  className="block text-gray-600 hover:text-pink-400 transition-colors"
-                >
-                  About
-                </a>
-                <a
-                  href="/#contact"
-                  onClick={toggleMenu}
-                  className="block text-gray-600 hover:text-pink-400 transition-colors"
-                >
-                  Contact
-                </a>
-              </div>
-            </div>
-          )}
 
           {/* User, Cart, and Auth Buttons */}
           <div className="flex items-center space-x-4">
@@ -134,22 +107,20 @@ const Navbar = () => {
               <>
                 <a
                   href={`/profile/${userData.id}`}
-                  className="flex items-center text-gray-600 hover:text-pink-400 transition-colors"
+                  className="hidden sm:flex items-center text-gray-600 hover:text-pink-400 transition-colors"
                 >
                   <Icon name="user" className="h-5 w-5 mr-1" />
-                  <span className="hidden sm:inline">
-                    {userData.name}
-                  </span>
+                  <span>{userData.name}</span>
                 </a>
                 <button
                   onClick={handleLogout}
-                  className="bg-pink-400 text-white px-4 py-2 rounded-full hover:bg-pink-500 transition-colors"
+                  className="hidden sm:block bg-pink-400 text-white px-4 py-2 rounded-full hover:bg-pink-500 transition-colors"
                 >
                   Logout
                 </button>
               </>
             ) : (
-              <>
+              <div className="hidden sm:flex items-center space-x-4">
                 <a
                   href="/login"
                   className="text-gray-600 hover:text-pink-400 transition-colors"
@@ -158,11 +129,11 @@ const Navbar = () => {
                 </a>
                 <a
                   href="/register"
-                  className="bg-pink-400 text-white px-4 py-2 rounded-full hover:bg-pink-500 transition-colors"
+                  className="bg-pink-primary pacifico-regular text-white px-4 py-2 rounded-full hover:bg-pink-secondary transition-colors"
                 >
-                 Test Register
+                  Register
                 </a>
-              </>
+              </div>
             )}
 
             {/* Cart Section */}
@@ -173,7 +144,10 @@ const Navbar = () => {
                 </span>
               )}
               <a href="/cart" className="relative p-2">
-                <Icon name="shoppingCart" className="h-6 w-6 text-gray-600 hover:text-pink-400 transition-colors" />
+                <Icon
+                  name="shoppingCart"
+                  className="h-6 w-6 text-gray-600 hover:text-pink-400 transition-colors"
+                />
                 {itemCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-pink-400 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
                     {itemCount}
@@ -183,6 +157,69 @@ const Navbar = () => {
             </div>
           </div>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        {isMenuOpen && (
+          <div className="sm:hidden absolute top-16 left-0 right-0 bg-white shadow-lg z-50">
+            <div className="px-4 pt-2 pb-4 space-y-2">
+              <a
+                href="/shop"
+                onClick={toggleMenu}
+                className="block py-2 text-gray-600 hover:text-pink-400 transition-colors"
+              >
+                Shop
+              </a>
+              <a
+                href="/#about"
+                onClick={toggleMenu}
+                className="block py-2 text-gray-600 hover:text-pink-400 transition-colors"
+              >
+                About
+              </a>
+              <a
+                href="/#contact"
+                onClick={toggleMenu}
+                className="block py-2 text-gray-600 hover:text-pink-400 transition-colors"
+              >
+                Contact
+              </a>
+              
+              <div className="border-t pt-4 mt-2">
+                {isLoggedIn && userData ? (
+                  <>
+                    <a
+                      href={`/profile/${userData.id}`}
+                      className="block py-2 text-gray-600 hover:text-pink-400 transition-colors"
+                    >
+                      Profile
+                    </a>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left py-2 text-gray-600 hover:text-pink-400 transition-colors"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <a
+                      href="/login"
+                      className="block py-2 text-gray-600 hover:text-pink-400 transition-colors"
+                    >
+                      Login
+                    </a>
+                    <a
+                      href="/register"
+                      className="block w-full bg-pink-primary pacifico-regular text-white px-4 py-3 rounded-full hover:bg-pink-secondary transition-colors mt-2"
+                    >
+                      Register
+                    </a>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
