@@ -181,7 +181,7 @@ const Navbar = () => {
               <>
                 <motion.a
                   whileHover={{ scale: 1.05 }}
-                  href={`/profile/${userData.id}`}
+                  href={`/profile/${encodeURIComponent(userData.name.toLowerCase().replace(/\+/g, '-'))}`}
                   className="hidden sm:flex items-center text-gray-600 hover:text-pink-400 transition-colors"
                 >
                   <Icon name="user" className="h-5 w-5 mr-1" />
@@ -277,7 +277,7 @@ const Navbar = () => {
                     <>
                       <motion.a
                         whileHover={{ scale: 1.05, x: 10 }}
-                        href={`/profile/${userData.id}`}
+                        href={`/profile/${encodeURIComponent(userData.name.toLowerCase().replace(/\s+/g, '-'))}`}
                         className="block py-2 text-gray-600 hover:text-pink-400 transition-colors"
                       >
                         Profile
