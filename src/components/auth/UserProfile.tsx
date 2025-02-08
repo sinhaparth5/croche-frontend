@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import { authApi } from "../../utils/api";
 import { auth } from "../../utils/auth";
 import type { User, UpdateUserDetails } from "../../types/user";
+import Cookies from "js-cookie"; // Import js-cookie for cookie management
 
 interface ProfileProps {
   email: string;
 }
+
+const generateProfileUrl = (name: string) => {
+  return `/profile/${name.toLowerCase().replace(/\s+/g, '-')}`;
+};
 
 export default function Profile({ email }: ProfileProps) {
   const [user, setUser] = useState<User | null>(null);
@@ -34,7 +39,6 @@ export default function Profile({ email }: ProfileProps) {
         setLoading(false);
       }
     }
-
     fetchUser();
   }, [email]);
 
@@ -51,14 +55,11 @@ export default function Profile({ email }: ProfileProps) {
     try {
       // Update user details via API
       await authApi.updateUserDetails(formData);
-
       // Fetch updated user data
       const updatedUser = await authApi.getUserByEmail(email);
       setUser(updatedUser);
-
-      // Update user information in localStorage
-      auth.updateUser(updatedUser);
-
+      // Update user information in cookies
+      Cookies.set("user", JSON.stringify(updatedUser), { expires: 7, secure: true });
       // Exit edit mode
       setIsEditing(false);
     } catch (err) {
@@ -94,7 +95,6 @@ export default function Profile({ email }: ProfileProps) {
           <h1 className="text-2xl font-bold text-gray-900">{user.name}</h1>
           <p className="text-gray-600">{user.email}</p>
         </div>
-
         {!user.userDetails && !isEditing ? (
           <div className="text-center py-4">
             <p className="text-gray-600 mb-4">Please complete your profile</p>
@@ -118,7 +118,6 @@ export default function Profile({ email }: ProfileProps) {
                 required
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700">City</label>
               <input
@@ -130,7 +129,6 @@ export default function Profile({ email }: ProfileProps) {
                 required
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700">Pincode</label>
               <input
@@ -142,7 +140,6 @@ export default function Profile({ email }: ProfileProps) {
                 required
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700">Country</label>
               <input
@@ -154,7 +151,6 @@ export default function Profile({ email }: ProfileProps) {
                 required
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700">Phone</label>
               <input
@@ -166,7 +162,6 @@ export default function Profile({ email }: ProfileProps) {
                 required
               />
             </div>
-
             <div className="flex justify-end space-x-3">
               <button
                 type="button"
@@ -193,28 +188,23 @@ export default function Profile({ email }: ProfileProps) {
                 Edit Details
               </button>
             </div>
-
             <div className="grid grid-cols-1 gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-xl">📍</span>
                 <span>{user.userDetails?.address}</span>
               </div>
-
               <div className="flex items-center gap-2">
                 <span className="text-xl">🏢</span>
                 <span>{user.userDetails?.city}</span>
               </div>
-
               <div className="flex items-center gap-2">
                 <span className="text-xl">🌍</span>
                 <span>{user.userDetails?.country}</span>
               </div>
-
               <div className="flex items-center gap-2">
                 <span className="text-xl">📞</span>
                 <span>{user.userDetails?.phone}</span>
               </div>
-
               <div className="flex items-center gap-2">
                 <span className="text-xl">📮</span>
                 <span>{user.userDetails?.pincode}</span>

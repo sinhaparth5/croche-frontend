@@ -16,12 +16,14 @@
     "astro": "^5.1.9",
     "clsx": "^2.1.1",
     "framer-motion": "^12.0.5",
+    "js-cookie": "^3.0.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sharp": "^0.33.5",
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@unocss/preset-attributify": "^65.4.3",
     "@unocss/preset-typography": "^65.4.3",
     "@unocss/preset-uno": "^65.4.3",

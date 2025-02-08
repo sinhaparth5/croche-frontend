@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Icon } from "../ui/Icons";
 import { motion, AnimatePresence } from "framer-motion";
+import Cookies from "js-cookie";
 
 interface DecorativeProps {
   top: string;
@@ -68,10 +69,9 @@ const Navbar = () => {
   useEffect(() => {
     const checkAuthStatus = () => {
       try {
-        // Only access localStorage when window is defined
         if (typeof window !== "undefined") {
-          const token = localStorage.getItem("authToken");
-          const userStr = localStorage.getItem("user");
+          const token = Cookies.get("authToken");
+          const userStr = Cookies.get("user");
           if (token && userStr) {
             const user = JSON.parse(userStr);
             setIsLoggedIn(true);
@@ -100,8 +100,8 @@ const Navbar = () => {
 
   const handleLogout = () => {
     if (typeof window !== "undefined") {
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("user");
+      Cookies.remove("authToken"); 
+      Cookies.remove("user"); 
       setIsLoggedIn(false);
       setUserData(null);
       window.location.href = "/";
