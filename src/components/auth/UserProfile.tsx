@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { authApi } from '../../utils/api';
-import type { User, UpdateUserDetails } from '../../types/user';
+import { useEffect, useState } from "react";
+import { authApi } from "../../utils/api";
+import { auth } from "../../utils/auth";
+import type { User, UpdateUserDetails } from "../../types/user";
 
 interface ProfileProps {
   email: string;
@@ -12,11 +13,11 @@ export default function Profile({ email }: ProfileProps) {
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<UpdateUserDetails>({
-    address: '',
-    city: '',
+    address: "",
+    city: "",
     pincode: 0,
-    country: '',
-    phone: ''
+    country: "",
+    phone: "",
   });
 
   useEffect(() => {
@@ -28,7 +29,7 @@ export default function Profile({ email }: ProfileProps) {
           setFormData(userData.userDetails);
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load profile');
+        setError(err instanceof Error ? err.message : "Failed to load profile");
       } finally {
         setLoading(false);
       }
@@ -39,21 +40,29 @@ export default function Profile({ email }: ProfileProps) {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: name === 'pincode' ? parseInt(value) || 0 : value
+      [name]: name === "pincode" ? parseInt(value) || 0 : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Update user details via API
       await authApi.updateUserDetails(formData);
+
+      // Fetch updated user data
       const updatedUser = await authApi.getUserByEmail(email);
       setUser(updatedUser);
+
+      // Update user information in localStorage
+      auth.updateUser(updatedUser);
+
+      // Exit edit mode
       setIsEditing(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update details');
+      setError(err instanceof Error ? err.message : "Failed to update details");
     }
   };
 
@@ -68,9 +77,7 @@ export default function Profile({ email }: ProfileProps) {
   if (error) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="bg-red-50 text-red-500 p-4 rounded-lg">
-          {error}
-        </div>
+        <div className="bg-red-50 text-red-500 p-4 rounded-lg">{error}</div>
       </div>
     );
   }
@@ -176,7 +183,7 @@ export default function Profile({ email }: ProfileProps) {
               </button>
             </div>
           </form>
-        ) : user.userDetails && (
+        ) : (
           <div className="space-y-4 border-t pt-6">
             <div className="flex justify-end">
               <button
@@ -186,31 +193,31 @@ export default function Profile({ email }: ProfileProps) {
                 Edit Details
               </button>
             </div>
-            
+
             <div className="grid grid-cols-1 gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-xl">📍</span>
-                <span>{user.userDetails.address}</span>
+                <span>{user.userDetails?.address}</span>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <span className="text-xl">🏢</span>
-                <span>{user.userDetails.city}</span>
+                <span>{user.userDetails?.city}</span>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <span className="text-xl">🌍</span>
-                <span>{user.userDetails.country}</span>
+                <span>{user.userDetails?.country}</span>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <span className="text-xl">📞</span>
-                <span>{user.userDetails.phone}</span>
+                <span>{user.userDetails?.phone}</span>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <span className="text-xl">📮</span>
-                <span>{user.userDetails.pincode}</span>
+                <span>{user.userDetails?.pincode}</span>
               </div>
             </div>
           </div>

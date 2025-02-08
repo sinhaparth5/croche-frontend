@@ -119,7 +119,7 @@ async function graphqlRequest<T>(query: string, variables: Record<string, any>, 
   };
 
   if (requireAuth) {
-    const token = localStorage.getItem('authToken');
+    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }

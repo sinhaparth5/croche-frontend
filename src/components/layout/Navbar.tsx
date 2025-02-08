@@ -68,15 +68,18 @@ const Navbar = () => {
   useEffect(() => {
     const checkAuthStatus = () => {
       try {
-        const token = localStorage.getItem("authToken");
-        const userStr = localStorage.getItem("user");
-        if (token && userStr) {
-          const user = JSON.parse(userStr);
-          setIsLoggedIn(true);
-          setUserData(user);
-        } else {
-          setIsLoggedIn(false);
-          setUserData(null);
+        // Only access localStorage when window is defined
+        if (typeof window !== "undefined") {
+          const token = localStorage.getItem("authToken");
+          const userStr = localStorage.getItem("user");
+          if (token && userStr) {
+            const user = JSON.parse(userStr);
+            setIsLoggedIn(true);
+            setUserData(user);
+          } else {
+            setIsLoggedIn(false);
+            setUserData(null);
+          }
         }
       } catch (error) {
         console.error("Error checking auth status:", error);
@@ -85,19 +88,24 @@ const Navbar = () => {
       }
     };
 
-    checkAuthStatus();
-    window.addEventListener("auth-change", checkAuthStatus);
-    return () => {
-      window.removeEventListener("auth-change", checkAuthStatus);
-    };
+    // Only add event listener on client side
+    if (typeof window !== "undefined") {
+      checkAuthStatus();
+      window.addEventListener("auth-change", checkAuthStatus);
+      return () => {
+        window.removeEventListener("auth-change", checkAuthStatus);
+      };
+    }
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("user");
-    setIsLoggedIn(false);
-    setUserData(null);
-    window.location.href = "/";
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("user");
+      setIsLoggedIn(false);
+      setUserData(null);
+      window.location.href = "/";
+    }
   };
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
@@ -181,7 +189,7 @@ const Navbar = () => {
               <>
                 <motion.a
                   whileHover={{ scale: 1.05 }}
-                  href={`/profile/${encodeURIComponent(userData.name.toLowerCase().replace(/\+/g, '-'))}`}
+                  href={`/profile/${encodeURIComponent(userData.name.toLowerCase().replace(/\s+/g, '-'))}`}
                   className="hidden sm:flex items-center text-gray-600 hover:text-pink-400 transition-colors"
                 >
                   <Icon name="user" className="h-5 w-5 mr-1" />
